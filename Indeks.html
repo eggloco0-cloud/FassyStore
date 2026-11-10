@@ -1,0 +1,932 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FASSY - Fashion Store for Everyone</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            dark: '#0f172a',
+                            accent: '#e11d48'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 flex flex-col min-h-full">
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="filterCategory('all')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-pink-500 flex items-center justify-center text-white font-black text-2xl tracking-tighter shadow-md">
+                        F
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-wider text-slate-900">FASSY</span>
+                        <span class="block text-[10px] uppercase font-bold text-slate-400 tracking-widest -mt-1">Official Store</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex space-x-1 font-semibold text-sm">
+                    <button onclick="filterCategory('all')" class="nav-btn active px-3 py-2 rounded-lg text-slate-600 hover:text-brand-accent hover:bg-slate-100 transition">Semua Produk</button>
+                    <button onclick="filterCategory('promo')" class="nav-btn px-3 py-2 rounded-lg text-rose-600 hover:bg-rose-50 font-bold transition"><i class="fa-solid fa-fire mr-1"></i> Promo 🔥</button>
+                    <button onclick="filterCategory('Pria')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-accent hover:bg-slate-100 transition">Pria</button>
+                    <button onclick="filterCategory('Wanita')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-accent hover:bg-slate-100 transition">Wanita</button>
+                    <button onclick="filterCategory('Anak')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-accent hover:bg-slate-100 transition">Anak-Anak</button>
+                    <button onclick="filterCategory('Dewasa')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-accent hover:bg-slate-100 transition">Dewasa</button>
+                </nav>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="openModal('addStockModal')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span class="hidden sm:inline">Input Stok Baru</span>
+                    </button>
+                    
+                    <button onclick="openModal('cartModal')" class="relative bg-slate-100 hover:bg-slate-200 text-slate-800 p-2.5 rounded-lg transition">
+                        <i class="fa-solid fa-shopping-bag text-lg"></i>
+                        <span id="cartBadge" class="absolute -top-1 -right-1 bg-brand-accent text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Quick Menu -->
+        <div class="md:hidden flex overflow-x-auto px-4 py-2 bg-slate-50 border-t border-slate-100 space-x-2 hide-scrollbar text-xs font-semibold">
+            <button onclick="filterCategory('all')" class="px-3 py-1.5 bg-white border border-slate-200 rounded-full shrink-0">Semua</button>
+            <button onclick="filterCategory('promo')" class="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-full shrink-0 font-bold">🔥 Promo</button>
+            <button onclick="filterCategory('Pria')" class="px-3 py-1.5 bg-white border border-slate-200 rounded-full shrink-0">Pria</button>
+            <button onclick="filterCategory('Wanita')" class="px-3 py-1.5 bg-white border border-slate-200 rounded-full shrink-0">Wanita</button>
+            <button onclick="filterCategory('Anak')" class="px-3 py-1.5 bg-white border border-slate-200 rounded-full shrink-0">Anak</button>
+            <button onclick="filterCategory('Dewasa')" class="px-3 py-1.5 bg-white border border-slate-200 rounded-full shrink-0">Dewasa</button>
+        </div>
+    </header>
+
+    <!-- PROMO BANNER / HERO (Etalase Paling Atas - Depan) -->
+    <section class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white py-8 sm:py-12 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-3 text-center md:text-left">
+                    <span class="inline-block bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-widest animate-pulse">
+                        <i class="fa-solid fa-bolt mr-1"></i> Special Promo Deals
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+                        Koleksi Fashion Trendy <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">FASSY</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base max-w-xl">
+                        Pilihan pakaian berkualitas tinggi untuk Pria, Wanita, Dewasa & Anak-anak dengan harga terbaik! Bisa bayar COD, Angsuran, QRIS & Transfer Bank.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-xs text-slate-300 font-medium">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-truck-fast text-emerald-400"></i> Pengiriman Cepat</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Garansi Original</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-dollar text-emerald-400"></i> COD Available</span>
+                    </div>
+                </div>
+
+                <!-- Contact & Sosmed Quick Card -->
+                <div class="bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15 w-full md:w-auto shrink-0 space-y-3">
+                    <div class="text-xs uppercase text-slate-400 font-bold tracking-wider text-center md:text-left">Hubungi Layanan Pelanggan</div>
+                    <div class="flex flex-col gap-2">
+                        <a href="https://wa.me/62881010990330" target="_blank" class="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl transition font-semibold text-sm">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>WA: 0881010990330</span>
+                        </a>
+                        <a href="https://instagram.com/fassyinsane" target="_blank" class="flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white px-4 py-2.5 rounded-xl transition font-semibold text-sm">
+                            <i class="fa-brands fa-instagram text-lg"></i>
+                            <span>IG: @fassyinsane</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ETALASE PROMO SPESIAL (Paling Atas) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-2">
+                <div class="bg-rose-500 text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-tags"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Produk Promo Terlaris</h2>
+                    <p class="text-xs text-slate-500">Diskon terbatas etalase terdepan!</p>
+                </div>
+            </div>
+            <button onclick="filterCategory('promo')" class="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1">
+                Lihat Semua Promo <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Promo Scroll Container -->
+        <div id="promoSection" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- MAIN PRODUCT CATALOG -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 pb-4 mb-6 gap-4">
+            <div>
+                <h2 id="catalogTitle" class="text-2xl font-extrabold text-slate-900">Katalog Semua Produk</h2>
+                <p class="text-xs text-slate-500">Temukan gaya terbaikmu bersama FASSY</p>
+            </div>
+            
+            <!-- Filters & Search -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <div class="relative flex-1 sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, merk..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                </div>
+                
+                <select id="genderFilter" onchange="renderProducts()" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                    <option value="all">Semua Kategori</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
+                    <option value="Anak">Anak-Anak</option>
+                    <option value="Dewasa">Dewasa</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Rendered by JS -->
+        </div>
+    </main>
+
+    <!-- PAYMENT METHODS SUMMARY BANNER -->
+    <section class="bg-slate-100 border-t border-slate-200 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-center font-bold text-slate-700 text-sm uppercase tracking-wider mb-6">Metode Pembayaran Resmi FASSY</h3>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-center">
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-hand-holding-dollar text-2xl text-amber-500 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">COD / Cash</span>
+                    <span class="text-[10px] text-slate-400">Bayar di Tempat</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-calendar-check text-2xl text-indigo-500 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">Angsuran</span>
+                    <span class="text-[10px] text-slate-400">Cicilan Mudah</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-qrcode text-2xl text-rose-500 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">QRIS</span>
+                    <span class="text-[10px] text-slate-400">Scan Semua E-Wallet</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-building-columns text-2xl text-blue-600 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">Bank Transfer</span>
+                    <span class="text-[10px] text-slate-500 font-semibold">BRI, BCA, BSI</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-wallet text-2xl text-sky-500 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">E-Wallet</span>
+                    <span class="text-[10px] text-slate-500 font-semibold">DANA, OVO</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-mobile-screen text-2xl text-orange-500 mb-1"></i>
+                    <span class="text-xs font-bold text-slate-800">E-Wallet</span>
+                    <span class="text-[10px] text-slate-500 font-semibold">GoPay, ShopeePay</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-white font-black text-lg">F</div>
+                    <span class="text-lg font-bold text-white tracking-wider">FASSY STORE</span>
+                </div>
+                <div class="flex flex-wrap justify-center gap-6 text-slate-300 font-medium">
+                    <a href="https://wa.me/62881010990330" target="_blank" class="hover:text-emerald-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i> 0881010990330</a>
+                    <a href="https://instagram.com/fassyinsane" target="_blank" class="hover:text-pink-400"><i class="fa-brands fa-instagram text-sm mr-1"></i> @fassyinsane</a>
+                </div>
+            </div>
+            <div class="text-center text-slate-500 border-t border-slate-800 pt-4">
+                &copy; 2026 Toko Baju FASSY. All rights reserved. Belanja Fashion Lengkap, Aman & Terpercaya.
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: DETAIL PRODUK -->
+    <div id="productDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800" id="detailTitle">Detail Produk</h3>
+                <button onclick="closeModal('productDetailModal')" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6" id="detailContent">
+                <!-- JS Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: INPUT STOK BARU -->
+    <div id="addStockModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl transform transition-all flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-box-archive text-indigo-600"></i>
+                    Form Input Stok Produk Baru (FASSY)
+                </h3>
+                <button onclick="closeModal('addStockModal')" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form id="addStockForm" onsubmit="handleAddProduct(event)" class="p-6 overflow-y-auto space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Pakaian</label>
+                    <input type="text" id="inputName" required placeholder="Contoh: Kaos Polos Combed 30s" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Merk / Brand</label>
+                        <input type="text" id="inputBrand" required placeholder="Contoh: Fassy Original" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori Target</label>
+                        <select id="inputCategory" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="Pria">Pria</option>
+                            <option value="Wanita">Wanita</option>
+                            <option value="Anak">Anak-Anak</option>
+                            <option value="Dewasa">Dewasa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Harga Normal (Rp)</label>
+                        <input type="number" id="inputPrice" required placeholder="150000" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Harga Promo (Optional)</label>
+                        <input type="number" id="inputPromoPrice" placeholder="Kosongkan jika bukan promo" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Jumlah Stok</label>
+                        <input type="number" id="inputStock" required placeholder="50" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pilihan Ukuran (Pisah Koma)</label>
+                        <input type="text" id="inputSizes" required placeholder="S, M, L, XL" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Gambar (Opsional)</label>
+                    <input type="url" id="inputImage" placeholder="https://..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Spesifikasi & Deskripsi Pakaian</label>
+                    <textarea id="inputSpecs" rows="3" required placeholder="Bahan Cotton Combed 30s, Jahitan Rantai, Menyerap Keringat, Sablon Plastisol..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <input type="checkbox" id="inputIsPromo" class="w-4 h-4 text-rose-600 rounded">
+                    <label for="inputIsPromo" class="text-xs font-bold text-rose-600">Tampilkan di Etalase Promo Terdepan</label>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md mt-4">
+                    <i class="fa-solid fa-save mr-1"></i> Simpan Stok Produk Baru
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CART & CHECKOUT -->
+    <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl transform transition-all flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-brand-accent"></i>
+                    Keranjang & Order Pemesanan FASSY
+                </h3>
+                <button onclick="closeModal('cartModal')" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Cart Items -->
+                <div id="cartItemsList" class="space-y-3">
+                    <!-- JS populated -->
+                </div>
+
+                <!-- Form Pemesanan -->
+                <div id="checkoutForm" class="border-t border-slate-200 pt-4 space-y-4">
+                    <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider">Data Pembeli & Pembayaran</h4>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="buyerName" placeholder="Nama Lengkap" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                        <input type="text" id="buyerPhone" placeholder="Nomor Telepon/WA" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
+                    </div>
+                    
+                    <textarea id="buyerAddress" rows="2" placeholder="Alamat Lengkap Pengiriman..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Metode Pembayaran</label>
+                        <select id="paymentMethod" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium">
+                            <option value="COD / Cash">COD (Cash on Delivery / Bayar Tunai)</option>
+                            <option value="Angsuran / Cicilan">Angsuran / Cicilan FASSY</option>
+                            <option value="QRIS">QRIS (Scan All QR)</option>
+                            <option value="Transfer Bank BRI">Transfer Bank BRI</option>
+                            <option value="Transfer Bank BCA">Transfer Bank BCA</option>
+                            <option value="Transfer Bank BSI">Transfer Bank BSI</option>
+                            <option value="E-Wallet DANA">E-Wallet DANA</option>
+                            <option value="E-Wallet OVO">E-Wallet OVO</option>
+                            <option value="E-Wallet GoPay">E-Wallet GoPay</option>
+                            <option value="E-Wallet ShopeePay">E-Wallet ShopeePay</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 text-xs text-slate-600">
+                        <div class="flex justify-between font-bold text-sm text-slate-900">
+                            <span>Total Pembayaran:</span>
+                            <span id="cartTotalPrice" class="text-brand-accent">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Action Buttons -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="processOrder('WA')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-md">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            Order via WhatsApp
+                        </button>
+                        <button onclick="processOrder('WEB')" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-md">
+                            <i class="fa-solid fa-globe"></i>
+                            Order via Web
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM NOTIFICATION BOX -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 z-50 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage" class="text-sm font-medium">Notifikasi</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial Product Master Data
+        let products = [
+            {
+                id: 1,
+                name: "Jaket Hoodie Casual Streetwear",
+                brand: "FASSY Premium",
+                category: "Pria",
+                ageGroup: "Dewasa",
+                price: 250000,
+                promoPrice: 185000,
+                isPromo: true,
+                stock: 24,
+                sizes: ["M", "L", "XL", "XXL"],
+                specs: "Bahan Fleecy Cotton Gramasi 280, Hangat, Sablon High Density, Desain Trendy.",
+                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 2,
+                name: "Gamis Elegance Floral Premium",
+                brand: "FASSY Hijab",
+                category: "Wanita",
+                ageGroup: "Dewasa",
+                price: 320000,
+                promoPrice: 249000,
+                isPromo: true,
+                stock: 18,
+                sizes: ["S", "M", "L", "XL"],
+                specs: "Bahan Silk Premium, Busui Friendly, Jatuh & Soft, Motif Exclusive.",
+                image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 3,
+                name: "Setelan Dino Cute Kids",
+                brand: "FASSY Kids",
+                category: "Anak",
+                ageGroup: "Anak",
+                price: 130000,
+                promoPrice: 89000,
+                isPromo: true,
+                stock: 35,
+                sizes: ["S (2-3 th)", "M (4-5 th)", "L (6-7 th)"],
+                specs: "Bahan Cotton Combed 24s Super Soft, Menyerap Keringat & Nyaman Anak.",
+                image: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 4,
+                name: "Kemeja Flanel Premium Unisex",
+                brand: "FASSY Denim",
+                category: "Pria",
+                ageGroup: "Dewasa",
+                price: 210000,
+                promoPrice: 159000,
+                isPromo: true,
+                stock: 15,
+                sizes: ["M", "L", "XL"],
+                specs: "Bahan Suede Wool Flanel Soft, Jahitan Rantai Standar Distro.",
+                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 5,
+                name: "Blouse Casual Korea Style",
+                brand: "FASSY Chic",
+                category: "Wanita",
+                ageGroup: "Dewasa",
+                price: 175000,
+                promoPrice: null,
+                isPromo: false,
+                stock: 20,
+                sizes: ["All Size Fit L"],
+                specs: "Bahan Linen Crinkle Premium, Adem, Nyaman Dipakai Harian.",
+                image: "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 6,
+                name: "Kaos Polo Oversize Minimalist",
+                brand: "FASSY Basic",
+                category: "Pria",
+                ageGroup: "Dewasa",
+                price: 140000,
+                promoPrice: null,
+                isPromo: false,
+                stock: 40,
+                sizes: ["M", "L", "XL"],
+                specs: "Bahan Lacoste Cotton CVC, Kerah Kokoh, Tidak Mudah Melar.",
+                image: "https://images.unsplash.com/photo-1625910513413-7fc98971f114?w=600&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 7,
+                name: "Dress Princess Anak Lace Premium",
+                brand: "FASSY Kids",
+                category: "Anak",
+                ageGroup: "Anak",
+                price: 195000,
+                promoPrice: null,
+                isPromo: false,
+                stock: 12,
+                sizes: ["S (3-4 th)", "M (5-6 th)"],
+                specs: "Bahan Organza Premium Lapis Furing Katun Adem, Anggun.",
+                image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=600&auto=format&fit=crop&q=80"
+            }
+        ];
+
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Helper format rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
+        }
+
+        // Initialize Page Data
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPromoProducts();
+            renderProducts();
+            updateCartBadge();
+        });
+
+        // Filter Functionality
+        function filterCategory(cat) {
+            currentFilter = cat;
+            document.getElementById('genderFilter').value = (cat === 'promo' || cat === 'all') ? 'all' : cat;
+            
+            // Scroll smoothly to catalog
+            if(cat !== 'all') {
+                document.getElementById('catalogTitle').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            renderProducts();
+        }
+
+        // Render Promo Section (Atas - Depan)
+        function renderPromoProducts() {
+            const promoContainer = document.getElementById('promoSection');
+            const promoProducts = products.filter(p => p.isPromo);
+
+            if (promoProducts.length === 0) {
+                promoContainer.innerHTML = `<p class="col-span-full text-center text-slate-400 py-4 text-xs">Belum ada promo aktif saat ini.</p>`;
+                return;
+            }
+
+            promoContainer.innerHTML = promoProducts.map(p => `
+                <div class="bg-white rounded-2xl border-2 border-rose-200 overflow-hidden shadow-sm hover:shadow-md transition relative flex flex-col">
+                    <span class="absolute top-2 left-2 bg-rose-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-full z-10 shadow">
+                        PROMO SPECIAL
+                    </span>
+                    <div class="h-44 sm:h-52 overflow-hidden bg-slate-100 relative group">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=FASSY+CLOTH'">
+                    </div>
+                    <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${p.brand} • ${p.category}</span>
+                            <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1 mt-0.5">${p.name}</h3>
+                            <div class="mt-2 flex items-baseline gap-2">
+                                <span class="font-extrabold text-rose-600 text-sm sm:text-base">${formatRupiah(p.promoPrice || p.price)}</span>
+                                ${p.promoPrice ? `<span class="text-[11px] text-slate-400 line-through">${formatRupiah(p.price)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-1">
+                            <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Stok: ${p.stock}</span>
+                            <button onclick="showDetail(${p.id})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-lg">
+                                Detail <i class="fa-solid fa-angle-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Main Catalog
+        function renderProducts() {
+            const container = document.getElementById('productGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const selectCategory = document.getElementById('genderFilter').value;
+
+            let filtered = products.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(searchVal) || p.brand.toLowerCase().includes(searchVal);
+                
+                let matchCat = true;
+                if (currentFilter === 'promo') {
+                    matchCat = p.isPromo;
+                } else if (selectCategory !== 'all') {
+                    matchCat = p.category === selectCategory || p.ageGroup === selectCategory;
+                } else if (currentFilter !== 'all') {
+                    matchCat = p.category === currentFilter || p.ageGroup === currentFilter;
+                }
+
+                return matchSearch && matchCat;
+            });
+
+            // Update title text
+            const titleElement = document.getElementById('catalogTitle');
+            titleElement.innerText = currentFilter === 'promo' ? 'Katalog Produk Promo' : `Katalog Produk (${currentFilter.toUpperCase()})`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400">
+                        <i class="fa-solid fa-box-open text-4xl mb-2"></i>
+                        <p class="text-sm">Produk tidak ditemukan.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="h-44 sm:h-52 overflow-hidden bg-slate-100 relative group">
+                            ${p.isPromo ? `<span class="absolute top-2 left-2 bg-rose-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-full z-10 shadow">PROMO</span>` : ''}
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=FASSY+CLOTH'">
+                        </div>
+                        <div class="p-3 sm:p-4">
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase">
+                                <span>${p.brand}</span>
+                                <span class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">${p.category}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1 mt-1">${p.name}</h3>
+                            <p class="text-[11px] text-slate-500 line-clamp-1 mt-1">${p.specs}</p>
+                            
+                            <div class="mt-3 flex items-baseline gap-2">
+                                <span class="font-extrabold text-slate-900 text-sm sm:text-base">${formatRupiah(p.promoPrice || p.price)}</span>
+                                ${p.promoPrice ? `<span class="text-[11px] text-slate-400 line-through">${formatRupiah(p.price)}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 sm:p-4 pt-0 space-y-2">
+                        <div class="text-[11px] text-slate-500 font-medium">Ukuran: <span class="font-bold text-slate-700">${p.sizes.join(', ')}</span></div>
+                        <div class="flex gap-2">
+                            <button onclick="showDetail(${p.id})" class="flex-1 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-1.5 rounded-lg text-xs transition">
+                                Detail
+                            </button>
+                            <button onclick="addToCart(${p.id})" class="flex-1 bg-brand-dark hover:bg-slate-800 text-white font-bold py-1.5 rounded-lg text-xs transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-cart-plus"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show Product Detail Modal
+        function showDetail(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('detailTitle').innerText = product.name;
+            document.getElementById('detailContent').innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rounded-xl overflow-hidden bg-slate-100 max-h-80">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/0f172a/ffffff?text=FASSY+CLOTH'">
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">${product.brand}</span>
+                            <h2 class="text-xl font-extrabold text-slate-900">${product.name}</h2>
+                            <span class="inline-block mt-1 bg-slate-100 text-slate-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Kategori: ${product.category} (${product.ageGroup})</span>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <div class="text-xs text-slate-400 font-bold uppercase">Harga Resmi FASSY</div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-rose-600">${formatRupiah(product.promoPrice || product.price)}</span>
+                                ${product.promoPrice ? `<span class="text-sm text-slate-400 line-through">${formatRupiah(product.price)}</span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase">Spesifikasi & Bahan:</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">${product.specs}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 text-xs">
+                            <div>
+                                <span class="font-bold text-slate-700 block">Stok Tersedia:</span>
+                                <span class="text-emerald-600 font-bold">${product.stock} pcs</span>
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-700 block">Pilihan Ukuran:</span>
+                                <span class="text-slate-800 font-bold">${product.sizes.join(', ')}</span>
+                            </div>
+                        </div>
+
+                        <button onclick="addToCart(${product.id}); closeModal('productDetailModal')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-cart-plus"></i> Tambah Ke Keranjang
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            openModal('productDetailModal');
+        }
+
+        // Add Product to Cart
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                if (existing.qty < product.stock) {
+                    existing.qty += 1;
+                    showToast(`Jumlah ${product.name} bertambah di keranjang!`);
+                } else {
+                    showToast(`Maaf, stok maksimum (${product.stock}) sudah tercapai!`);
+                }
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.promoPrice || product.price,
+                    qty: 1,
+                    selectedSize: product.sizes[0]
+                });
+                showToast(`${product.name} berhasil ditambahkan!`);
+            }
+
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+            if (totalQty > 0) {
+                badge.innerText = totalQty;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Render Cart Modal Content
+        function renderCartModal() {
+            const container = document.getElementById('cartItemsList');
+            const totalElement = document.getElementById('cartTotalPrice');
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-6 text-xs">Keranjang belanja Anda masih kosong.</p>`;
+                totalElement.innerText = formatRupiah(0);
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map((item, index) => {
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+
+                // get product sizes
+                const master = products.find(p => p.id === item.id);
+                const sizeOptions = master ? master.sizes : [item.selectedSize];
+
+                return `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <div class="flex-1 pr-2">
+                            <h4 class="font-bold text-slate-800 line-clamp-1">${item.name}</h4>
+                            <div class="text-slate-500 text-[11px] mt-0.5">${formatRupiah(item.price)} x ${item.qty}</div>
+                            
+                            <!-- Size Selector -->
+                            <div class="mt-1 flex items-center gap-1">
+                                <span class="text-[10px] text-slate-400 font-semibold">Ukuran:</span>
+                                <select onchange="updateCartSize(${index}, this.value)" class="bg-white border border-slate-300 rounded text-[10px] px-1 py-0.5 font-bold">
+                                    ${sizeOptions.map(sz => `<option value="${sz}" ${sz === item.selectedSize ? 'selected' : ''}>${sz}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
+                                <button onclick="changeCartQty(${index}, -1)" class="px-2 py-1 text-slate-600 hover:bg-slate-100">-</button>
+                                <span class="px-2 font-bold">${item.qty}</span>
+                                <button onclick="changeCartQty(${index}, 1)" class="px-2 py-1 text-slate-600 hover:bg-slate-100">+</button>
+                            </div>
+                            <span class="font-bold text-slate-900 w-20 text-right">${formatRupiah(subtotal)}</span>
+                            <button onclick="removeFromCart(${index})" class="text-rose-500 hover:text-rose-700 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalElement.innerText = formatRupiah(total);
+        }
+
+        function changeCartQty(index, change) {
+            const item = cart[index];
+            const master = products.find(p => p.id === item.id);
+
+            if (change > 0 && item.qty >= master.stock) {
+                showToast(`Stok tidak mencukupi (Maksimal: ${master.stock})`);
+                return;
+            }
+
+            item.qty += change;
+            if (item.qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartBadge();
+            renderCartModal();
+        }
+
+        function updateCartSize(index, size) {
+            cart[index].selectedSize = size;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCartModal();
+        }
+
+        // Process Order via Web or WA
+        function processOrder(type) {
+            if (cart.length === 0) {
+                showToast("Keranjang belanja Anda masih kosong!");
+                return;
+            }
+
+            const name = document.getElementById('buyerName').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+            const address = document.getElementById('buyerAddress').value.trim();
+            const payment = document.getElementById('paymentMethod').value;
+
+            if (!name || !phone || !address) {
+                showToast("Mohon lengkapi Nama, Telepon, dan Alamat Anda!");
+                return;
+            }
+
+            let total = 0;
+            let itemListText = "";
+            cart.forEach((item, i) => {
+                const sub = item.price * item.qty;
+                total += sub;
+                itemListText += `${i+1}. ${item.name} (${item.selectedSize}) x${item.qty} = ${formatRupiah(sub)}\n`;
+            });
+
+            if (type === 'WA') {
+                const waMessage = `Halo *FASSY STORE*, Saya ingin memesan pakaian:\n\n*Detail Pesanan:*\n${itemListText}\n*Total Pembayaran:* ${formatRupiah(total)}\n*Metode Pembayaran:* ${payment}\n\n*Data Pembeli:*\n- Nama: ${name}\n- No. HP: ${phone}\n- Alamat: ${address}\n\nMohon diproses, Terima kasih!`;
+                const encodedMsg = encodeURIComponent(waMessage);
+                window.open(`https://wa.me/62881010990330?text=${encodedMsg}`, '_blank');
+            } else {
+                // Web Order Alert Box Simulation
+                showToast(`Pesanan Web Berhasil Dibuat! Metode: ${payment}`);
+                alert(`TERIMA KASIH TELAH BERBELANJA DI FASSY STORE!\n\nPesanan Atas Nama: ${name}\nTotal: ${formatRupiah(total)}\nPembayaran: ${payment}\n\nPesanan telah dicatat dan tim FASSY akan segera memproses pengiriman ke alamat Anda.`);
+                cart = [];
+                updateCartBadge();
+                closeModal('cartModal');
+            }
+        }
+
+        // Handle Add New Stock Product Form
+        function handleAddProduct(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('inputName').value.trim();
+            const brand = document.getElementById('inputBrand').value.trim();
+            const category = document.getElementById('inputCategory').value;
+            const price = parseFloat(document.getElementById('inputPrice').value);
+            const promoPriceVal = document.getElementById('inputPromoPrice').value;
+            const promoPrice = promoPriceVal ? parseFloat(promoPriceVal) : null;
+            const stock = parseInt(document.getElementById('inputStock').value);
+            const sizesStr = document.getElementById('inputSizes').value;
+            const sizes = sizesStr.split(',').map(s => s.trim());
+            const image = document.getElementById('inputImage').value.trim() || 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop&q=80';
+            const specs = document.getElementById('inputSpecs').value.trim();
+            const isPromo = document.getElementById('inputIsPromo').checked;
+
+            const newProduct = {
+                id: Date.now(),
+                name,
+                brand,
+                category,
+                ageGroup: category === 'Anak' ? 'Anak' : 'Dewasa',
+                price,
+                promoPrice,
+                isPromo,
+                stock,
+                sizes,
+                specs,
+                image
+            };
+
+            products.unshift(newProduct); // Place new product at the beginning
+            renderPromoProducts();
+            renderProducts();
+            
+            document.getElementById('addStockForm').reset();
+            closeModal('addStockModal');
+            showToast("Stok Produk Baru Berhasil Ditambahkan!");
+        }
+
+        // Modal Helpers
+        function openModal(modalId) {
+            if (modalId === 'cartModal') renderCartModal();
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+```
